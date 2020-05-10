@@ -112,7 +112,6 @@ public class VisibleRadianceCollector : RadianceCollector
     public override void SendRadianceData(CTSMarker ctsmarker, ushort header, ushort width, ushort height, HashSet<string> ComponentTransformittedSet, JObject ReuseDataInfoObject, bool firstLoadStore)
     {
 
-        Debug.Log(header+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (Launcher.instance.radianceMgr.mIsPrepaed == false)
         {
             return;
@@ -122,6 +121,7 @@ public class VisibleRadianceCollector : RadianceCollector
 
         Texture2D png = new Texture2D(mRenderTexture.width, mRenderTexture.height, TextureFormat.RGB24, false);
         png.ReadPixels(new Rect(0, 0, mRenderTexture.width, mRenderTexture.height), 0, 0);
+
 
         Color32[] visiblePixels = png.GetPixels32();
 
