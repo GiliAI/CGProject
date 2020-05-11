@@ -25,7 +25,9 @@ namespace Resources.Scripts.History
 
         private int pathNum;
         private bool hasChanged;
-       
+        private PreGaze preGaze = new PreGaze();
+
+
 
         //开启协程
         private void Start()

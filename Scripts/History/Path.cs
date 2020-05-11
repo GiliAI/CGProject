@@ -31,14 +31,14 @@ namespace Resources.Scripts.History
         {
             get
             {
-                return new Vector3(camera.posX, camera.posY, camera.posZ);
+                return new Vector3(mCamera.posX, mCamera.posY, mCamera.posZ);
             }
         }
         public Vector3 cameraRot
         {
             get
             {
-                return new Vector3(camera.rotX, camera.rotY, camera.rotZ);
+                return new Vector3(mCamera.rotX, mCamera.rotY, mCamera.rotZ);
             }
         }
         public Vector3 speed
@@ -59,6 +59,7 @@ namespace Resources.Scripts.History
                 return mLastPos;
             }
         }
+
 
         public void UpdateCamera(ClientObjectAttribute clientObjectAttribute)
         {

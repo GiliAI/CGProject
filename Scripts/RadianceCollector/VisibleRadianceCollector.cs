@@ -112,6 +112,7 @@ public class VisibleRadianceCollector : RadianceCollector
     public override void SendRadianceData(CTSMarker ctsmarker, ushort header, ushort width, ushort height, HashSet<string> ComponentTransformittedSet, JObject ReuseDataInfoObject, bool firstLoadStore)
     {
 
+        Debug.Log(header+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (Launcher.instance.radianceMgr.mIsPrepaed == false)
         {
             return;
@@ -121,7 +122,6 @@ public class VisibleRadianceCollector : RadianceCollector
 
         Texture2D png = new Texture2D(mRenderTexture.width, mRenderTexture.height, TextureFormat.RGB24, false);
         png.ReadPixels(new Rect(0, 0, mRenderTexture.width, mRenderTexture.height), 0, 0);
-
 
         Color32[] visiblePixels = png.GetPixels32();
 
@@ -221,6 +221,41 @@ public class VisibleRadianceCollector : RadianceCollector
         }
     }
 
+    public override HashSet<string> getCenterComponents(int width, int height, ClientObjectAttribute clientObjAttribute)
+    {
+        HashSet<string> result = new HashSet<string>();
+        if (Launcher.instance.radianceMgr.mIsPrepaed == false)
+        {
+            return null;
+        }
+        RenderTexture.active = mRenderTexture;
+
+        Texture2D png = new Texture2D(mRenderTexture.width, mRenderTexture.height, TextureFormat.RGB24, false);
+        png.ReadPixels(new Rect(mRenderTexture.width * 0.33f, mRenderTexture.height * 0.33f, mRenderTexture.width * 0.33f, mRenderTexture.height * 0.33f), 0, 0);
+        /* System.IO.File.WriteAllBytes(@"e:\test.png", png.EncodeToPNG());
+         Texture2D png2 = new Texture2D(mRenderTexture.width, mRenderTexture.height, TextureFormat.RGB24, false);
+         png2.ReadPixels(new Rect(0, 0, mRenderTexture.width, mRenderTexture.height), 0, 0);
+         System.IO.File.WriteAllBytes(@"e:\test2.png", png2.EncodeToPNG());*/
+
+        Color32[] visiblePixels = png.GetPixels32();
+        for (int i = 0; i < visiblePixels.Length; i++)
+        {
+            string name = Launcher.instance.radianceMgr.mVisibleNames[visiblePixels[i].r, visiblePixels[i].g, visiblePixels[i].b];
+
+            if (name == null)
+            {
+                continue;
+            }
+            //替换重用构件名
+            string[] nameArr = name.Split('/');
+            if (!result.Contains(name))
+            {
+                result.Add(name);
+            }
+        }
+        Debug.Log("Saved");
+        return result;
+    }
 
     //public override void SendRadianceData(CTSMarker ctsmarker, ushort header, ushort width, ushort height, HashSet<string> ComponentTransformittedSet, JObject ReuseDataInfoObject, bool firstLoadStore)
     //{

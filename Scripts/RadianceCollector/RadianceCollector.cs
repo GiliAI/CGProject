@@ -135,4 +135,9 @@ public class RadianceCollector
         fs.Close();
         png = null;
     }
+
+    public virtual HashSet<string> getCenterComponents(int width, int height, ClientObjectAttribute clientObjAttribute)
+    {
+        return null;
+    }
 }
