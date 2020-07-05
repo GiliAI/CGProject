@@ -136,8 +136,10 @@ public class RadianceCollector
         png = null;
     }
 
+    //1751578
     public virtual HashSet<string> getCenterComponents(int width, int height, ClientObjectAttribute clientObjAttribute)
     {
         return null;
     }
+    //1751578
 }

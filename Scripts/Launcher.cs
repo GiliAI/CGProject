@@ -99,6 +99,7 @@ public class Launcher : MonoBehaviour
         }
     }
 
+    //1751578
     public History history
     {
         get
@@ -106,6 +107,7 @@ public class Launcher : MonoBehaviour
             return mHistory;
         }
     }
+    //1751578
 
     public int consoleWidth
     {
@@ -174,8 +176,10 @@ public class Launcher : MonoBehaviour
 
         ConsoleUI.instance.SetIpAddress(serverAddress);
         //StartCoroutine(CheckInternetIpAddressAsync());
-        
+
+        //1751578
         mHistory = go.AddComponent<History>();
+        //1751578
     }
 
     void OnEnable()

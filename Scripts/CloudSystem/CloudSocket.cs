@@ -203,6 +203,7 @@ public class CloudSocket
                     _notPredicted = true; 
                 }
             }
+            //1751578
             else
             { _count++; }
 
@@ -211,18 +212,18 @@ public class CloudSocket
                 Debug.Log("!!!!!!!!!!!!!Predict!!!!!!!!!!!!!");
                 //Record a = Launcher.instance.history.getPredict(ctsMarker.sessionId,clientObjectAttribute);
                 predictObjectAttribute.Param = clientObjectAttribute.Param;
-//                predictObjectAttribute.CameraPosX = a.posX;
-//                predictObjectAttribute.CameraPosY = a.posY;
-//                predictObjectAttribute.CameraPosZ = a.posZ;
-//                predictObjectAttribute.CameraRotX = a.rotX;
-//                predictObjectAttribute.CameraRotY = a.rotY;
-//                predictObjectAttribute.CameraRotZ = a.rotZ;
+                //predictObjectAttribute.CameraPosX = (float)a.posX;
+                //predictObjectAttribute.CameraPosY = (float)a.posY;
+                //predictObjectAttribute.CameraPosZ = (float)a.posZ;
+                //predictObjectAttribute.CameraRotX = (float)a.rotX;
+                //predictObjectAttribute.CameraRotY = (float)a.rotY;
+                //predictObjectAttribute.CameraRotZ = (float)a.rotZ;
                 //测试数据
-                    
-                        
+
+
                 predictObjectAttribute.CameraPosX = (float)-9.745914;
                 predictObjectAttribute.CameraPosY = (float)13.74586;
-                predictObjectAttribute.CameraPosZ = (float) 6.888044;
+                predictObjectAttribute.CameraPosZ = (float)6.888044;
                 predictObjectAttribute.CameraRotX = (float)0.3567473;
                 predictObjectAttribute.CameraRotY = (float)-0.7427009;
                 predictObjectAttribute.CameraRotZ = (float)-0.5666805;
@@ -232,6 +233,7 @@ public class CloudSocket
                 _notPredicted = false;
                 Debug.Log("!!!!!!!!!!!!!Finish!!!!!!!!!!!!!");
             }
+            //1751578
         }
     }
 }

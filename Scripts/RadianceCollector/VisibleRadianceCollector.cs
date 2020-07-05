@@ -221,6 +221,7 @@ public class VisibleRadianceCollector : RadianceCollector
         }
     }
 
+    //1751578
     public override HashSet<string> getCenterComponents(int width, int height, ClientObjectAttribute clientObjAttribute)
     {
         HashSet<string> result = new HashSet<string>();
@@ -256,6 +257,7 @@ public class VisibleRadianceCollector : RadianceCollector
         Debug.Log("Saved");
         return result;
     }
+    //1751578
 
     //public override void SendRadianceData(CTSMarker ctsmarker, ushort header, ushort width, ushort height, HashSet<string> ComponentTransformittedSet, JObject ReuseDataInfoObject, bool firstLoadStore)
     //{

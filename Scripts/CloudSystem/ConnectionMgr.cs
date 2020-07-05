@@ -42,10 +42,12 @@ public class ConnectionMgr : MonoBehaviour
 
         mTcpToCloudSocketMap.Add(ctsMarker, cloudSocket);
         mCloudToTcpSocketMap.Add(cloudSocket, ctsMarker);
-        
+
+        //1751578
         string recordPath = Application.streamingAssetsPath + "/" + Launcher.instance.GetSceneName + "/history.txt";
         Launcher.instance.history.getPath(recordPath);
         Launcher.instance.history.NewPath(ctsMarker.sessionId);
+        //1751578
     }
 
     public void RemoveConnection(CTSMarker ctsMarker)
@@ -55,7 +57,9 @@ public class ConnectionMgr : MonoBehaviour
             mCloudConnections.Remove(mMarkerToCloudConnectionMap[ctsMarker]);
 
             mMarkerToCloudConnectionMap.Remove(ctsMarker);
+            //1751578
             Launcher.instance.history.RemovePath(ctsMarker.sessionId);
+            //1751578
         }
     }
 

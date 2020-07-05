@@ -31,14 +31,14 @@ namespace Resources.Scripts.History
         {
             get
             {
-                return new Vector3(mCamera.posX, mCamera.posY, mCamera.posZ);
+                return new Vector3((float)mCamera.posX, (float)mCamera.posY, (float)mCamera.posZ);
             }
         }
         public Vector3 cameraRot
         {
             get
             {
-                return new Vector3(mCamera.rotX, mCamera.rotY, mCamera.rotZ);
+                return new Vector3((float)mCamera.rotX, (float)mCamera.rotY, (float)mCamera.rotZ);
             }
         }
         public Vector3 speed

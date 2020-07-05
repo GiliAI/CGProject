@@ -3,13 +3,13 @@
 {
     public class Record:DatasetItemBase
     {
-        public float posX;
-        public float posY;
-        public float posZ;
+        public double posX;
+        public double posY;
+        public double posZ;
 
-        public float rotX;
-        public float rotY;
-        public float rotZ;
+        public double rotX;
+        public double rotY;
+        public double rotZ;
 
         public Record(Vector3 position,Vector3 rotation)
         {

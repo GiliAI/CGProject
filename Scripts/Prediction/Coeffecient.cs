@@ -5,12 +5,14 @@ using DbscanImplementation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Resources.Scripts.DBscan;
+using Resources.Scripts.History;
 using UnityEngine;
 
 namespace Resources.Scripts.Prediction
 {
     public class Coeffecient
     {
+        private PreGaze preGaze = new PreGaze();
         public double GetCoefficeent(Record[] cluster)
         {
             //string[] lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath+"/testModel/testModel.vsg");

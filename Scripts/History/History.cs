@@ -27,7 +27,10 @@ namespace Resources.Scripts.History
         private bool hasChanged;
         private PreGaze preGaze = new PreGaze();
 
-
+        //Debug.Log("!!!!!!!!!!!!!Start Dbscan!!!!!!!!!!!!!");
+        //private List<int> clusterIds;
+        private List<Cluster> clusterNet;
+        //private HashSet<Record[]> _clusters;
 
         //开启协程
         private void Start()
@@ -39,6 +42,28 @@ namespace Resources.Scripts.History
             StartCoroutine(OutputRecord());
             StartCoroutine(Maintenance());
             //StartCoroutine(Predict());
+        }
+
+        float t = 0;
+        private void Update()
+        {
+            //if(recordHistory.Count==0)
+            //{
+            //    return;
+            //}
+            //t += Time.deltaTime; 
+            //if(t<10)
+            //{
+            //    return;
+            //}
+            //else
+            //{
+            //    t = 0;
+            //}
+            //if (Time.frameCount % 5 == 0)
+            //{
+            //    print("每5帧执行一次");
+            //}
         }
         IEnumerator OutputRecord()
         {
@@ -123,6 +148,7 @@ namespace Resources.Scripts.History
                 }
             }
         }*/
+        //获取历史路径文件地址
         public void getPath(string _recordPath)
         {
             if ( recordPath == _recordPath)
@@ -133,7 +159,8 @@ namespace Resources.Scripts.History
             recordPath = _recordPath;
 
             ReadRecord(recordPath);
-            
+
+            t = 10;
             //Debug.Log(recordPath);
         }
         //路径历史管理
@@ -149,12 +176,18 @@ namespace Resources.Scripts.History
         {
             pathHistory.Remove(ctsMarker);
         }
+        //更新摄像头
         public void UpdateCamera(string ctsMarker,ClientObjectAttribute clientObjectAttribute)
         {
             pathHistory[ctsMarker].UpdateCamera(clientObjectAttribute);
         }
+        //读入历史路径
         public void ReadRecord(string _path)
         {
+            if(recordHistory.Count>0)
+            {
+                return;
+            }
             using (StreamReader sr = new StreamReader(_path))
             {
                 string line;
@@ -168,7 +201,6 @@ namespace Resources.Scripts.History
                     if (!recordHistory.ContainsKey(_record[0]))
                     {
                         recordHistory.Add(_record[0],new List<BrowseRecord>());
-                        pathNum++;
                     }
                     string[] liness = _record[1].Split('_');
                     string[] lines0 = liness[0].Split(',');
@@ -179,6 +211,15 @@ namespace Resources.Scripts.History
                     recordHistory[_record[0]].Add(new BrowseRecord(tmpPos,tmpRot,tmpTime));
                 }
             }
+            ScanProgram dbscan = new ScanProgram();
+            var keyArr=recordHistory.Keys.ToArray();
+            string tmpPathNum = keyArr[keyArr.Length - 1];
+            tmpPathNum = tmpPathNum.Remove(0, 4);
+            int.TryParse(tmpPathNum, out pathNum);
+            pathNum++;
+            //_clusters = 
+            dbscan.Dbscan(out clusterNet, getAllRecord());
+            Debug.Log("Finish Init");
         }
         IEnumerator Maintenance()
         {
@@ -257,47 +298,72 @@ namespace Resources.Scripts.History
         {
             
         }*/
+        public List<BrowseRecord> getAllBrowseRecord()
+        {
+            List<BrowseRecord> result = new List<BrowseRecord>();
+            foreach (List<BrowseRecord> browseRecords in recordHistory.Values)
+            {
+                foreach (BrowseRecord browseRecord in browseRecords)
+                {
+                    result.Add(browseRecord);
+                }
+            }
+            return result;
+        }
+
+        public List<Record> getAllRecord()
+        {
+            List<Record> result = new List<Record>();
+            foreach (List<BrowseRecord> browseRecords in recordHistory.Values)
+            {
+                foreach (BrowseRecord browseRecord in browseRecords)
+                {
+                    result.Add(new Record(browseRecord.pos,browseRecord.rot));
+                }
+            }
+            return result;
+        }
+
         public Record getPredict(string ctsMarker,ClientObjectAttribute cl)
         {
-            Program dbscan = new Program();
-            //Debug.Log("!!!!!!!!!!!!!Start Dbscan!!!!!!!!!!!!!");
-            HashSet<Record[]> _clusters = dbscan.Dbscan();
+            Debug.Log("Start predict");
             Predict predict = new Predict();
-            List<Record> predictedCluster = predict.GetPredictedCluster(
-                new Vector3(cl.CameraPosX,cl.CameraPosY,cl.CameraPosZ),
-                new Vector3(cl.CameraRotX,cl.CameraRotY,cl.CameraRotZ),
-                _clusters
-                );
-            Record posRange = getRangeRecord(predictedCluster);
+            List<Record> gazePoints = preGaze.getGazePoints(getAllBrowseRecord());
+            Cluster predictedCluster = predict.GetPredictedCluster(
+                new Vector3(cl.CameraPosX, cl.CameraPosY, cl.CameraPosZ),
+                new Vector3(cl.CameraRotX, cl.CameraRotY, cl.CameraRotZ),
+                clusterNet, gazePoints);
+            //Record posRange = getRangeRecord(predictedCluster);
             Vector3 tmpPos = pathHistory[ctsMarker].cameraPos;
-            Vector3 rot;
-            float x_sum = 0, y_sum = 0, z_sum = 0, x_rot = 0, y_rot = 0, z_rot = 0;
-            foreach (var j in predictedCluster)
-            {
-                x_sum += j.posX;
-                y_sum += j.posY;
-                z_sum += j.posZ;
-                x_rot += j.rotX;
-                y_rot += j.rotY;
-                z_rot += j.rotZ;
-            }
-            float x_ave = x_sum / predictedCluster.Count;
-            float y_ave = y_sum / predictedCluster.Count;
-            float z_ave = z_sum / predictedCluster.Count;
-            float x_averot = x_rot / predictedCluster.Count;
-            float y_averot = y_rot / predictedCluster.Count;
-            float z_averot = z_rot / predictedCluster.Count;
+            //float x_sum = 0, y_sum = 0, z_sum = 0, x_rot = 0, y_rot = 0, z_rot = 0;
+            //foreach (var j in predictedCluster)
+            //{
+            //    x_sum += (float)j.posX;
+            //    y_sum += (float)j.posY;
+            //    z_sum += (float)j.posZ;
+            //    x_rot += (float)j.rotX;
+            //    y_rot += (float)j.rotY;
+            //    z_rot += (float)j.rotZ;
+            //}
+            //float x_ave = x_sum / predictedCluster.Count;
+            //float y_ave = y_sum / predictedCluster.Count;
+            //float z_ave = z_sum / predictedCluster.Count;
+            Vector3 cluterPos = predictedCluster.center;
+            //float x_averot = x_rot / predictedCluster.Count;
+            //float y_averot = y_rot / predictedCluster.Count;
+            //float z_averot = z_rot / predictedCluster.Count;
+            Vector3 rot = cluterPos - tmpPos;
 
-            if (tmpPos.x <= posRange.posX && tmpPos.y <= posRange.posY && tmpPos.z <= posRange.posZ
-                && tmpPos.x >= posRange.rotX && tmpPos.y >= posRange.rotY && tmpPos.z >= posRange.rotZ)
-            {
-                rot = new Vector3(x_averot, y_averot, z_averot);
-            }
-            else
-            {
-                rot = new Vector3(x_ave, y_ave, z_ave);
-                rot = rot - tmpPos;
-            }
+            //if (tmpPos.x <= posRange.posX && tmpPos.y <= posRange.posY && tmpPos.z <= posRange.posZ
+            //    && tmpPos.x >= posRange.rotX && tmpPos.y >= posRange.rotY && tmpPos.z >= posRange.rotZ)
+            //{
+            //    rot = new Vector3(x_averot, y_averot, z_averot);
+            //}
+            //else
+            //{
+            //    rot = new Vector3(x_ave, y_ave, z_ave);
+            //    rot = rot - tmpPos;
+            //}
             //------
             /*if (predictedCluster != null)
             {
@@ -322,27 +388,27 @@ namespace Resources.Scripts.History
             {
                 if(record.posX>maxX)
                 {
-                    maxX = record.posX;
+                    maxX = (float)record.posX;
                 }
                 if (record.posY > maxY)
                 {
-                    maxY = record.posY;
+                    maxY = (float)record.posY;
                 }
                 if (record.posZ > maxZ)
                 {
-                    maxZ = record.posZ;
+                    maxZ = (float)record.posZ;
                 }
                 if (record.posX < minX)
                 {
-                    minX = record.posX;
+                    minX = (float)record.posX;
                 }
                 if (record.posX < minY)
                 {
-                    minY = record.posX;
+                    minY = (float)record.posX;
                 }
                 if (record.posX < minZ)
                 {
-                    minZ = record.posX;
+                    minZ = (float)record.posX;
                 }
             }
             return new Record(new Vector3(maxX, maxY, maxZ), new Vector3(minX,minY,minZ));
